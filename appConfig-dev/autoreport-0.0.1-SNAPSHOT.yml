@@ -1,0 +1,93 @@
+
+feign:
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+    # 默认值 200，该值 okhttp 也会使用，见 @OkHttpFeignLoadBalancedConfiguration
+    max-connections: 10000 
+    # 默认值 50，该值 okhttp 也会使用
+    max-connections-per-route: 1000
+
+ribbon:
+  # 配置见 @DefaultClientConfigImpl
+  # 每个路由连接大小, 默认值 50
+  MaxConnectionsPerHost: 1000
+  # 连接池大小，默认值 200 （MaxConnectionsPerHost * 路由的个数）
+  MaxTotalConnections: 10000
+  # 默认值 200
+  PoolMaxThreads: 10000
+  # 默认值 2000
+  ConnectTimeout: 2000 
+  # 默认值 5000
+  ReadTimeout: 8000  
+  
+
+# 配置参考 https://github.com/Netflix/Hystrix/wiki/Configuration
+hystrix:
+  threadpool:
+    default:
+      # 并发执行的最大线程数。默认10，基本的原则是保持线程池尽可能小，他主要是为了释放压力，防止资源被阻塞, 当一切都是正常的时候，线程池一般仅会有1到2个线程激活来提供服务。计算方法： 每秒最大支撑的请求数 * (99%的请求平均响应时间[秒] + 缓存值)
+      coreSize: 50
+      maximumSize: 1000
+      # 默认值 false, 跟 maximumSize 和 keepAliveTimeMinutes 搭配使用，必须为 ture, maximumSize 才能起作用。 表示当超过 coreSize 时，会产生新的线程来执行，当线程不再使用时，会等待 keepAliveTimeMinutes 分钟后释放掉
+      allowMaximumSizeToDivergeFromCoreSize: true
+      # maximumSize>coreSize 时生效
+      keepAliveTimeMinutes: 1  
+      # 默认值 -1。当设为－1，会使用SynchronousQueue，值为正时使用LinkedBlcokingQueue
+      maxQueueSize: -1 
+  command:
+    default:
+      execution:
+        isolation:
+          # 隔离模式，有两种 SEMAPHORE/THREAD, 默认采用 THREAD
+          strategy: THREAD  
+          thread:
+            # 隔离时间，默认值 1000， 此值一般要大于  [(ribbonReadTimeout + ribbonConnectTimeout) * (maxAutoRetries[默认0] + 1) * (maxAutoRetriesNextServer[默认1] + 1)] (太小会导致很多正常业务失败，太大会影响熔断效果，甚至雪崩)
+            timeoutInMilliseconds: 20000  
+
+spring:
+  mvc:
+    # 统一 404 的错误为异常，而不是跳转到 /error 链接
+    throw-exception-if-no-handler-found: true 
+  resources:
+    # rest 服务原则上不能为资源建议 mapping
+    add-mappings: false
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    # 因为 mycat er 子表的插入不支持 multi-insert 表达式，所以需要开启 allowMultiQueries
+    url: jdbc:mysql://10.8.10.100:8066/TESTDB?autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&rewriteBatchedStatements=true
+    #url: jdbc:mysql://10.8.10.100:3306/test1?autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&rewriteBatchedStatements=true
+    username: root
+    password: zd120120
+    initialSize: 5
+    minIdle: 5
+    maxActive: 1000
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    # 一般下面两个设置为 false，只在 idle 时进行可用性测试
+    testOnBorrow: false
+    testOnReturn: false
+    # mysql 不支持游标，设置为 false
+    poolPreparedStatements: false  
+    maxPoolPreparedStatementPerConnectionSize: 20
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+#mybatis:
+#  type-aliases-package: tk.mybatis.springboot.model
+#  mapper-locations: classpath:mapper/*.xml
+
+mapper:
+  # 改在基类中用 RegisterMapper 注解配置
+  #mappers: com.zeasn.datamgtest.common.MyMapper
+  not-empty: false
+  # 如果 mapper 实体中使用了 long/byte 这种带默认值的基本类型，则必须要开启此配置
+  #usePrimitiveType: true
+  # 指定表名称/字段与mapper 的关系
+  style: normal
