@@ -5,7 +5,12 @@ spring:
     throw-exception-if-no-handler-found: true  
   resources:
     # rest 服务原则上不能为资源建议 mapping
-    add-mappings: false  
+    add-mappings: false
+  rabbitmq:
+    host: 10.8.10.100
+    port: 5672
+    username: admin
+    password: admin
 
 ribbon:
   httpclient:
