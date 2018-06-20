@@ -82,6 +82,11 @@ spring:
     poolPreparedStatements: false  
     maxPoolPreparedStatementPerConnectionSize: 20
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  rabbitmq:
+    host: 10.8.10.100
+    port: 5672
+    username: admin
+    password: admin
 
 #mybatis:
 #  type-aliases-package: tk.mybatis.springboot.model
