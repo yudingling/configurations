@@ -94,8 +94,9 @@ spring:
 
 mapper:
   # 改在基类中用 RegisterMapper 注解配置
-  #mappers: com.zeasn.datamgtest.common.MyMapper
-  not-empty: false
+  # mappers: com.zeasn.datamgtest.common.MyMapper
+  # 是否判断!=''，默认不判断
+  # not-empty: false
   # 如果 mapper 实体中使用了 long/byte 这种带默认值的基本类型，则必须要开启此配置
   usePrimitiveType: true
   # 指定表名称/字段与mapper 的关系
