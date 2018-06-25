@@ -6,11 +6,62 @@ spring:
   resources:
     # rest 服务原则上不能为资源建议 mapping
     add-mappings: false
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    # 因为 mycat er 子表的插入不支持 multi-insert 表达式，所以需要开启 allowMultiQueries
+    #url: jdbc:mysql://10.8.10.100:8066/TESTDB?autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://10.8.10.100:3306/rc_design?autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&rewriteBatchedStatements=true
+    username: root
+    password: zd120120
+    initialSize: 5
+    minIdle: 5
+    maxActive: 1000
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    # 一般下面两个设置为 false，只在 idle 时进行可用性测试
+    testOnBorrow: false
+    testOnReturn: false
+    # mysql 不支持游标，设置为 false
+    poolPreparedStatements: false  
+    maxPoolPreparedStatementPerConnectionSize: 20
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
   rabbitmq:
     host: 10.8.10.100
     port: 5672
     username: admin
     password: admin
+  redis:
+    # database default 0
+    database: 0
+    # singleton setting
+    host: 10.8.10.100
+    port: 6379
+    # culster setting
+    #cluster:
+    #  nodes: 127.0.0.1:7000,127.0.0.1:7001
+    password: admin
+    timeout: 2000
+    pool:
+      # 最大连接数
+      max-active: -1
+      # 等待超时时间
+      max-wait: 5000
+      max-idle: 20
+      min-idle: 0
+
+mapper:
+  # 改在基类中用 RegisterMapper 注解配置
+  # mappers: com.zeasn.datamgtest.common.MyMapper
+  # 是否判断!=''，默认不判断
+  # not-empty: false
+  # 如果 mapper 实体中使用了 long/byte 这种带默认值的基本类型，则必须要开启此配置
+  # usePrimitiveType: true
+  # 指定表名称/字段与mapper 的关系
+  style: normal
 
 ribbon:
   httpclient:
