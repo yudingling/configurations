@@ -87,11 +87,12 @@ spring:
     port: 5672
     username: admin
     password: admin
-  elasticsearch:
-    cluster-nodes: 10.8.10.100:9200
-    # cluster setting
-    #cluster-name: esCluster
-    #cluster-nodes: 10.8.10.100:9200,10.8.10.100:9201
+  data:
+    elasticsearch:
+      cluster-nodes: 10.8.10.100:9200
+      # cluster setting
+      #cluster-name: esCluster
+      #cluster-nodes: 10.8.10.100:9200,10.8.10.100:9201
 
 #mybatis:
 #  type-aliases-package: tk.mybatis.springboot.model
