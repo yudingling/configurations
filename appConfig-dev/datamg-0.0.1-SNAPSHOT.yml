@@ -89,10 +89,10 @@ spring:
     password: admin
   data:
     elasticsearch:
-      cluster-nodes: 10.8.10.100:9200
+      cluster-nodes: 10.8.10.100:9300
       # cluster setting
       #cluster-name: esCluster
-      #cluster-nodes: 10.8.10.100:9200,10.8.10.100:9201
+      #cluster-nodes: 10.8.10.100:9300,10.8.10.101:9300
 
 #mybatis:
 #  type-aliases-package: tk.mybatis.springboot.model
